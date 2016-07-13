@@ -216,26 +216,17 @@ drw_setfontset(Drw *drw, Fnt *set)
 }
 
 void
-drw_setscheme(Drw *drw, Clr *scm)
+drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, XftColor *color)
 {
-	if (drw)
-		drw->scheme = scm;
-}
-
-void
-drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int invert)
-{
-	if (!drw || !drw->scheme)
+	if (!drw)
 		return;
-	XSetForeground(drw->dpy, drw->gc, invert ? drw->scheme[ColBg].pixel : drw->scheme[ColFg].pixel);
-	if (filled)
-		XFillRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w, h);
-	else
-		XDrawRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w - 1, h - 1);
+	XSetForeground(drw->dpy, drw->gc, color->pixel);
+	XFillRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w, h);
+
 }
 
 int
-drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lpad, const char *text, int invert)
+drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, const char *text, XftColor *color)
 {
 	char buf[1024];
 	int ty;
@@ -252,19 +243,15 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
 	XftResult result;
 	int charexists = 0;
 
-	if (!drw || (render && !drw->scheme) || !text || !drw->fonts)
+	if (!drw || !text || !drw->fonts)
 		return 0;
 
 	if (!render) {
 		w = ~w;
 	} else {
-		XSetForeground(drw->dpy, drw->gc, drw->scheme[invert ? ColFg : ColBg].pixel);
-		XFillRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w, h);
 		d = XftDrawCreate(drw->dpy, drw->drawable,
 		                  DefaultVisual(drw->dpy, drw->screen),
 		                  DefaultColormap(drw->dpy, drw->screen));
-		x += lpad;
-		w -= lpad;
 	}
 
 	usedfont = drw->fonts;
@@ -308,7 +295,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
 
 				if (render) {
 					ty = y + (h - usedfont->h) / 2 + usedfont->xfont->ascent;
-					XftDrawStringUtf8(d, &drw->scheme[invert ? ColBg : ColFg],
+					XftDrawStringUtf8(d, color,
 					                  usedfont->xfont, x, ty, (XftChar8 *)buf, len);
 				}
 				x += ew;
@@ -379,7 +366,7 @@ drw_fontset_getwidth(Drw *drw, const char *text)
 {
 	if (!drw || !drw->fonts || !text)
 		return 0;
-	return drw_text(drw, 0, 0, 0, 0, 0, text, 0);
+	return drw_text(drw, 0, 0, 0, 0, text, 0);
 }
 
 void

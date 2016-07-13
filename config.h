@@ -7,8 +7,8 @@ static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "xft:Source Code Pro:size=11", "xft:Consolas:size=11" };
-static const char dmenufont[]       = "xft:Source Code Pro:size=11";
+static const char *fonts[]          = { "xft:Source Code Pro:size=10", "xft:Consolas:size=10" };
+static const char dmenufont[]       = "xft:Source Code Pro:size=10";
 
 /* colorscheme */
 static const char col_center_darkest[]   = "#222C00";
@@ -29,10 +29,11 @@ static const char col_warmer_middle[]    = "#AAA439";
 static const char col_warmer_lighter[]   = "#E8E287";
 static const char col_warmer_lightest[]  = "#FFFDD3";
 
-static const char *colors[SchemeLast][3] = {
-	/*               fg         bg         border   */
-	[SchemeNorm] = { col_center_lightest, col_center_darkest, col_warmer_darkest },
-	[SchemeSel] =  { col_center_middle,   col_center_darkest, col_warmer_middle  },
+static const char *colors[][ColLast] = {
+                      /* ColText */        /* ColBar */        /* ColBorder */
+    [SchemeNorm]  = { col_center_lighter,  col_center_darkest,  col_warmer_darker  },
+    [SchemeSel]   = { col_center_lightest, col_center_lighter,  col_warmer_middle  },
+    [SchemeFocus] = { col_center_lightest, col_center_lightest, col_warmer_lighter },
 };
 
 /* tagging */
