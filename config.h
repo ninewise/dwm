@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 #include <stdlib.h>
+#include "movestack.c"
 
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
@@ -110,7 +111,9 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask, XK_Return,      spawn,          { .v  = termcmd     } },
 	{ MODKEY,           XK_b,           togglebar,      { 0                 } },
 	{ MODKEY,           XK_j,           focusstack,     { .i  = +1          } },
+	{ MODKEY|ShiftMask, XK_j,           movestack,      { .i  = +1          } },
 	{ MODKEY,           XK_k,           focusstack,     { .i  = -1          } },
+	{ MODKEY|ShiftMask, XK_k,           movestack,      { .i  = -1          } },
 	{ MODKEY,           XK_comma,       incnmaster,     { .i  = +1          } },
 	{ MODKEY,           XK_period,      incnmaster,     { .i  = -1          } },
 	{ MODKEY,           XK_h,           setmfact,       { .f  = -0.05       } },
