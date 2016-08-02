@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include "movestack.c"
+#include "mpdcontrol.c"
 
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
@@ -84,24 +85,20 @@ static const char *sound_toggle[] = { "sound_control.sh", "toggle", NULL };
 static const char *sound_up[]     = { "sound_control.sh", "up",     NULL };
 static const char *sound_down[]   = { "sound_control.sh", "down",   NULL };
 
-static const char *mpc_next[]   = { "mpc", "-q", "next",   NULL };
-static const char *mpc_toggle[] = { "mpc", "-q", "toggle", NULL };
-static const char *mpc_prev[]   = { "mpc", "-q", "prev",   NULL };
-
 static const char *brightness_up[]   = { "xbacklight", "-inc", "10", NULL };
 static const char *brightness_down[] = { "xbacklight", "-dec", "10", NULL };
 
 static Key keys[] = {
 	/* modifier         key             function        argument */
     /* function keys */
-	{ 0, 0x1008ff12, spawn, { .v = sound_toggle    } }, /* XF86XK_AudioMute */
-	{ 0, 0x1008ff13, spawn, { .v = sound_up        } }, /* XF86XK_AudioRaiseVolume */
-	{ 0, 0x1008ff11, spawn, { .v = sound_down      } }, /* XF86XK_AudioLowerVolume */
-	{ 0, 0x1008ff17, spawn, { .v = mpc_next        } }, /* XF86XK_AudioNext */
-	{ 0, 0x1008ff16, spawn, { .v = mpc_prev        } }, /* XF86XK_AudioPrev */
-	{ 0, 0x1008ff14, spawn, { .v = mpc_toggle      } }, /* XF86XK_AudioPlay */
-	{ 0, 0x1008ff02, spawn, { .v = brightness_up   } }, /* XF86XK_MonBrightnessUp */
-	{ 0, 0x1008ff03, spawn, { .v = brightness_down } }, /* XF86XK_MonBrightnessDown */
+	{ 0, 0x1008ff12, spawn,      { .v = sound_toggle    } }, /* XF86XK_AudioMute */
+	{ 0, 0x1008ff13, spawn,      { .v = sound_up        } }, /* XF86XK_AudioRaiseVolume */
+	{ 0, 0x1008ff11, spawn,      { .v = sound_down      } }, /* XF86XK_AudioLowerVolume */
+	{ 0, 0x1008ff17, mpdchange,  { .i = +1              } }, /* XF86XK_AudioNext */
+	{ 0, 0x1008ff16, mpdchange,  { .i = -1              } }, /* XF86XK_AudioPrev */
+	{ 0, 0x1008ff14, mpdcontrol, { 0                    } }, /* XF86XK_AudioPlay */
+	{ 0, 0x1008ff02, spawn,      { .v = brightness_up   } }, /* XF86XK_MonBrightnessUp */
+	{ 0, 0x1008ff03, spawn,      { .v = brightness_down } }, /* XF86XK_MonBrightnessDown */
       /* 0x1008ff1b = XF86Search */
 
     /* Other keys (scroll lock is rebound using xcape) */
