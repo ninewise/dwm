@@ -1,6 +1,8 @@
 /* See LICENSE file for copyright and license details. */
 
 #include <stdlib.h>
+#include <X11/X.h>
+#include <X11/keysym.h>
 #include "dwm.h"
 #include "movestack.c"
 #include "mpdcontrol.c"
@@ -34,7 +36,7 @@ static const char col_warmer_lightest[]  = "#FFFDD3";
 
 static const char *colors[][ColLast] = {
                       /* ColText */        /* ColBar */        /* ColBorder */
-    [SchemeNorm]  = { col_center_lighter,  col_center_darkest,  col_warmer_darker  },
+    [SchemeNorm]  = { col_center_lighter,  col_center_darkest,  col_warmer_darkest },
     [SchemeSel]   = { col_center_lightest, col_center_lighter,  col_warmer_middle  },
     [SchemeFocus] = { col_center_lightest, col_center_lightest, col_warmer_lighter },
 };
@@ -124,8 +126,8 @@ static Key keys[] = {
 	{ MODKEY,           XK_f,           setlayout,      { .v  = &layouts[2] } },
 	{ MODKEY,           XK_space,       setlayout,      { 0                 } },
 	{ MODKEY|ShiftMask, XK_space,       togglefloating, { 0                 } },
-	{ MODKEY,           XK_0,           view,           { .ui = ~0          } },
-	{ MODKEY|ShiftMask, XK_0,           tag,            { .ui = ~0          } },
+	{ MODKEY,           XK_0,           view,           { .ui = ~0u         } },
+	{ MODKEY|ShiftMask, XK_0,           tag,            { .ui = ~0u         } },
 	{ MODKEY,           XK_w,           focusmon,       { .i  = -1          } },
 	{ MODKEY,           XK_e,           focusmon,       { .i  = +1          } },
 	{ MODKEY|ShiftMask, XK_w,           tagmon,         { .i  = -1          } },

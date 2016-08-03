@@ -5,6 +5,9 @@
 
 #include <mpd/client.h>
 
+#include "dwm.h"
+
+#define UNUSED(x) (void)(x)
 #define MPDHOST "localhost"
 #define MPDPORT 6600
 
@@ -50,7 +53,8 @@ char *get_regerror(int errcode, regex_t *compiled){
     return buffer;
 }
 
-void mpdcontrol(){
+void mpdcontrol(const Arg *arg){
+    UNUSED(arg);
     struct mpd_connection *conn;
     struct mpd_status *status;
     struct mpd_song *song;
