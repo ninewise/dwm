@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 #include <stdlib.h>
+#include "dwm.h"
 #include "movestack.c"
 #include "mpdcontrol.c"
 
