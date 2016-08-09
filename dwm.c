@@ -50,6 +50,9 @@
 /* configuration, allows nested code to access above variables */
 #include "config.h"
 
+/* patches */
+#include "warp.c"
+
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
@@ -593,6 +596,7 @@ focusmon(const Arg *arg)
 	unfocus(selmon->sel, 0);
 	selmon = m;
 	focus(NULL);
+    warp(selmon->sel);
 }
 
 void
@@ -1133,6 +1137,8 @@ restack(Monitor *m)
 	}
 	XSync(dpy, False);
 	while (XCheckMaskEvent(dpy, EnterWindowMask, &ev));
+    if (m == selmon && (m->tagset[m->seltags] & m->sel->tags))
+        warp(m->sel);
 }
 
 void
