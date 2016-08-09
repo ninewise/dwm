@@ -4,8 +4,6 @@
 #include <X11/X.h>
 #include <X11/keysym.h>
 #include "dwm.h"
-#include "movestack.c"
-#include "mpdcontrol.c"
 
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
@@ -44,6 +42,13 @@ static const char *colors[][ColLast] = {
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
+/* include(s) depending on the tags array */
+#include "flextile.c"
+
+/* includes depending on flextile */
+#include "movestack.c"
+#include "mpdcontrol.c"
+
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
@@ -58,6 +63,13 @@ static const Rule rules[] = {
 static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
+
+static const int layoutaxis[] = {
+	1,    /* layout axis: 1 = x, 2 = y; negative values mirror the layout, setting the master area to the right / bottom instead of left / top */
+	2,    /* master axis: 1 = x (from left to right), 2 = y (from top to bottom), 3 = z (monocle) */
+	2,    /* stack axis:  1 = x (from left to right), 2 = y (from top to bottom), 3 = z (monocle) */
+};
+static const unsigned int mastersplit = 1;    /* number of tiled clients in the master area */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -114,8 +126,6 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask, XK_j,           movestack,      { .i  = +1          } },
 	{ MODKEY,           XK_k,           focusstack,     { .i  = -1          } },
 	{ MODKEY|ShiftMask, XK_k,           movestack,      { .i  = -1          } },
-	{ MODKEY,           XK_comma,       incnmaster,     { .i  = +1          } },
-	{ MODKEY,           XK_period,      incnmaster,     { .i  = -1          } },
 	{ MODKEY,           XK_h,           setmfact,       { .f  = -0.05       } },
 	{ MODKEY,           XK_l,           setmfact,       { .f  = +0.05       } },
 	{ MODKEY,           XK_Return,      zoom,           { 0                 } },
@@ -133,6 +143,12 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask, XK_w,           tagmon,         { .i  = -1          } },
 	{ MODKEY|ShiftMask, XK_e,           tagmon,         { .i  = +1          } },
 	{ MODKEY|ShiftMask, XK_q,           quit,           { 0                 } },
+	{ MODKEY|ControlMask,           XK_t,      rotatelayoutaxis, {.i = 0} },    /* 0 = layout axis */
+	{ MODKEY|ControlMask,           XK_Tab,    rotatelayoutaxis, {.i = 1} },    /* 1 = master axis */
+	{ MODKEY|ControlMask|ShiftMask, XK_Tab,    rotatelayoutaxis, {.i = 2} },    /* 2 = stack axis */
+	{ MODKEY|ControlMask,           XK_Return, mirrorlayout,     {0} },
+	{ MODKEY|ControlMask,           XK_h,      shiftmastersplit, {.i = -1} },   /* reduce the number of tiled clients in the master area */
+	{ MODKEY|ControlMask,           XK_l,      shiftmastersplit, {.i = +1} },   /* increase the number of tiled clients in the master area */
 
 	TAGKEYS(XK_1, 0)
 	TAGKEYS(XK_2, 1)
