@@ -70,6 +70,27 @@ typedef struct {
 	void (*arrange)(Monitor *);
 } Layout;
 
+struct Monitor {
+	char ltsymbol[16];
+	float mfact;
+	int nmaster;
+	int num;
+	int by;               /* bar geometry */
+	int mx, my, mw, mh;   /* screen size */
+	int wx, wy, ww, wh;   /* window area  */
+	unsigned int seltags;
+	unsigned int sellt;
+	unsigned int tagset[2];
+	int showbar;
+	int topbar;
+	Client *clients;
+	Client *sel;
+	Client *stack;
+	Monitor *next;
+	Window barwin;
+	const Layout *lt[2];
+};
+
 typedef struct {
 	const char *klass;
 	const char *instance;
@@ -112,6 +133,7 @@ static long getstate(Window w);
 static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void grabbuttons(Client *c, int focused);
 static void grabkeys(void);
+static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
 static void manage(Window w, XWindowAttributes *wa);
