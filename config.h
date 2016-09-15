@@ -42,7 +42,7 @@ static const char *colors[][ColLast] = {
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[] = { "1", "2", "3" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -50,7 +50,6 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
 };
 
@@ -79,10 +78,11 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[]    = { "dmenu_run",   "-m", dmenumon, "-fn", dmenufont, "-nb", col_colder_darkest, "-nf", col_colder_lightest, "-sb", col_colder_middle, "-sf", col_colder_lightest, NULL };
-static const char *termcmd[]     = { "urxvtc",      NULL  };
-static const char *abduco_run[]  = { "abduco_run",  NULL  };
-static const char *abduco_list[] = { "abduco_list", NULL  };
+static const char *dmenucmd[]     = { "dmenu_run",    "-m", dmenumon, "-fn", dmenufont, "-nb", col_colder_darkest, "-nf", col_colder_lightest, "-sb", col_colder_middle, "-sf", col_colder_lightest, NULL };
+static const char *termcmd[]      = { "urxvtc",          NULL  };
+static const char *abduco_run[]   = { "abduco", "run",   NULL  };
+static const char *abduco_list[]  = { "abduco", "list",  NULL  };
+static const char *abduco_watch[] = { "abduco", "watch", NULL  };
 
 static const char *sound_toggle[] = { "sound_control.sh", "toggle", NULL };
 static const char *sound_up[]     = { "sound_control.sh", "up",     NULL };
@@ -94,45 +94,44 @@ static const char *brightness_down[] = { "xbacklight", "-dec", "10", NULL };
 static Key keys[] = {
 	/* modifier         key             function        argument */
     /* function keys */
-	{ 0, 0x1008ff12, spawn,      { .v = sound_toggle    } }, /* XF86XK_AudioMute */
-	{ 0, 0x1008ff13, spawn,      { .v = sound_up        } }, /* XF86XK_AudioRaiseVolume */
-	{ 0, 0x1008ff11, spawn,      { .v = sound_down      } }, /* XF86XK_AudioLowerVolume */
+	{ 0, 0x1008ff12, sspawn,     { .v = sound_toggle    } }, /* XF86XK_AudioMute */
+	{ 0, 0x1008ff13, sspawn,     { .v = sound_up        } }, /* XF86XK_AudioRaiseVolume */
+	{ 0, 0x1008ff11, sspawn,     { .v = sound_down      } }, /* XF86XK_AudioLowerVolume */
 	{ 0, 0x1008ff17, mpdchange,  { .i = +1              } }, /* XF86XK_AudioNext */
 	{ 0, 0x1008ff16, mpdchange,  { .i = -1              } }, /* XF86XK_AudioPrev */
 	{ 0, 0x1008ff14, mpdcontrol, { 0                    } }, /* XF86XK_AudioPlay */
-	{ 0, 0x1008ff02, spawn,      { .v = brightness_up   } }, /* XF86XK_MonBrightnessUp */
-	{ 0, 0x1008ff03, spawn,      { .v = brightness_down } }, /* XF86XK_MonBrightnessDown */
+	{ 0, 0x1008ff02, sspawn,     { .v = brightness_up   } }, /* XF86XK_MonBrightnessUp */
+	{ 0, 0x1008ff03, sspawn,     { .v = brightness_down } }, /* XF86XK_MonBrightnessDown */
       /* 0x1008ff1b = XF86Search */
 
     /* Other keys (scroll lock is rebound using xcape) */
-	{ 0,                XK_Scroll_Lock, spawn,          { .v  = dmenucmd    } },
-	{ MODKEY,           XK_s,           spawn,          { .v  = abduco_run  } },
-	{ MODKEY,           XK_a,           spawn,          { .v  = abduco_list } },
-	{ MODKEY|ShiftMask, XK_Return,      spawn,          { .v  = termcmd     } },
-	{ MODKEY,           XK_b,           togglebar,      { 0                 } },
-	{ MODKEY,           XK_j,           focusstack,     { .i  = +1          } },
-	{ MODKEY|ShiftMask, XK_j,           movestack,      { .i  = +1          } },
-	{ MODKEY,           XK_k,           focusstack,     { .i  = -1          } },
-	{ MODKEY|ShiftMask, XK_k,           movestack,      { .i  = -1          } },
-	{ MODKEY,           XK_comma,       incnmaster,     { .i  = +1          } },
-	{ MODKEY,           XK_period,      incnmaster,     { .i  = -1          } },
-	{ MODKEY,           XK_h,           setmfact,       { .f  = -0.05       } },
-	{ MODKEY,           XK_l,           setmfact,       { .f  = +0.05       } },
-	{ MODKEY,           XK_Return,      zoom,           { 0                 } },
-	{ MODKEY,           XK_Tab,         view,           { 0                 } },
-	{ MODKEY|ShiftMask, XK_c,           killclient,     { 0                 } },
-	{ MODKEY,           XK_m,           setlayout,      { .v  = &layouts[0] } },
-	{ MODKEY,           XK_t,           setlayout,      { .v  = &layouts[1] } },
-	{ MODKEY,           XK_f,           setlayout,      { .v  = &layouts[2] } },
-	{ MODKEY,           XK_space,       setlayout,      { 0                 } },
-	{ MODKEY|ShiftMask, XK_space,       togglefloating, { 0                 } },
-	{ MODKEY,           XK_0,           view,           { .ui = ~0u         } },
-	{ MODKEY|ShiftMask, XK_0,           tag,            { .ui = ~0u         } },
-	{ MODKEY,           XK_w,           focusmon,       { .i  = -1          } },
-	{ MODKEY,           XK_e,           focusmon,       { .i  = +1          } },
-	{ MODKEY|ShiftMask, XK_w,           tagmon,         { .i  = -1          } },
-	{ MODKEY|ShiftMask, XK_e,           tagmon,         { .i  = +1          } },
-	{ MODKEY|ShiftMask, XK_q,           quit,           { 0                 } },
+	{ 0,                XK_Scroll_Lock, sspawn,         { .v  = dmenucmd     } },
+	{ MODKEY,           XK_s,           sspawn,         { .v  = abduco_run   } },
+	{ MODKEY,           XK_a,           sspawn,         { .v  = abduco_list  } },
+	{ MODKEY,           XK_w,           sspawn,         { .v  = abduco_watch } },
+	{ MODKEY|ShiftMask, XK_Return,      sspawn,         { .v  = termcmd      } },
+	{ MODKEY,           XK_b,           togglebar,      { 0                  } },
+	{ MODKEY,           XK_j,           focusstack,     { .i  = +1           } },
+	{ MODKEY|ShiftMask, XK_j,           movestack,      { .i  = +1           } },
+	{ MODKEY,           XK_k,           focusstack,     { .i  = -1           } },
+	{ MODKEY|ShiftMask, XK_k,           movestack,      { .i  = -1           } },
+	{ MODKEY,           XK_comma,       incnmaster,     { .i  = +1           } },
+	{ MODKEY,           XK_period,      incnmaster,     { .i  = -1           } },
+	{ MODKEY,           XK_h,           setmfact,       { .f  = -0.05        } },
+	{ MODKEY,           XK_l,           setmfact,       { .f  = +0.05        } },
+	{ MODKEY,           XK_Return,      zoom,           { 0                  } },
+	{ MODKEY,           XK_Tab,         view,           { 0                  } },
+	{ MODKEY|ShiftMask, XK_c,           killclient,     { 0                  } },
+	{ MODKEY,           XK_m,           setlayout,      { .v  = &layouts[0]  } },
+	{ MODKEY,           XK_t,           setlayout,      { .v  = &layouts[1]  } },
+	{ MODKEY,           XK_f,           setlayout,      { .v  = &layouts[2]  } },
+	{ MODKEY,           XK_space,       setlayout,      { 0                  } },
+	{ MODKEY|ShiftMask, XK_space,       togglefloating, { 0                  } },
+	{ MODKEY,           XK_0,           view,           { .ui = ~0u          } },
+	{ MODKEY|ShiftMask, XK_0,           tag,            { .ui = ~0u          } },
+	{ MODKEY,           XK_e,           focusmon,       { .i  = +1           } },
+	{ MODKEY|ShiftMask, XK_e,           tagmon,         { .i  = +1           } },
+	{ MODKEY|ShiftMask, XK_q,           quit,           { 0                  } },
 
 	TAGKEYS(XK_1, 0)
 	TAGKEYS(XK_2, 1)
