@@ -49,9 +49,9 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class     instance    title       tags mask     isfloating   monitor */
-	{ NULL,      NULL,       "BlueJ",    1 << 8,       1,           -1 },
-	{ "Firefox", NULL,       NULL,       1 << 8,       0,           -1 },
+	/* class     instance    title        tags mask     isfloating   monitor */
+	{ NULL,      NULL,       "BlueJ",     1 << 8,       1,           -1 },
+	{ NULL,      NULL,       "Greenfoot", 1 << 8,       1,           -1 },
 };
 
 /* layout(s) */
