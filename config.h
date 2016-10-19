@@ -13,7 +13,6 @@ static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "xft:Source Code Pro:size=10", "xft:Consolas:size=10" };
-static const char dmenufont[]       = "xft:Source Code Pro:size=10";
 
 /* colorscheme */
 static const char col_center_darkest[]   = "#222C00";
@@ -79,8 +78,8 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[]     = { "dmenu_run",    "-m", dmenumon, "-fn", dmenufont, "-nb", col_colder_darkest, "-nf", col_colder_lightest, "-sb", col_colder_middle, "-sf", col_colder_lightest, NULL };
-static const char *termcmd[]      = { "urxvtc",          NULL  };
+static const char *dmenucmd[]     = { "dmenu_run", "-m", dmenumon, NULL };
+static const char *termcmd[]      = { "urxvtc", NULL  };
 static const char *abduco_run[]   = { "abduco", "run",   NULL  };
 static const char *abduco_list[]  = { "abduco", "list",  NULL  };
 static const char *abduco_watch[] = { "abduco", "watch", NULL  };
