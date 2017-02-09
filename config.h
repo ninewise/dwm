@@ -79,7 +79,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[]     = { "dmenu_run", "-m", dmenumon, NULL };
-static const char *termcmd[]      = { "urxvtc", NULL  };
+static const char *termcmd[]      = { "st", "-e", "bash", "-i", NULL };
 static const char *abduco_run[]   = { "abduco", "run",   NULL  };
 static const char *abduco_list[]  = { "abduco", "list",  NULL  };
 static const char *abduco_watch[] = { "abduco", "watch", NULL  };
