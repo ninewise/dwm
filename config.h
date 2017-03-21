@@ -48,9 +48,10 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class     instance    title        tags mask     isfloating   monitor */
-	{ NULL,      NULL,       "BlueJ",     1 << 8,       1,           -1 },
-	{ NULL,      NULL,       "Greenfoot", 1 << 8,       1,           -1 },
+	/* class     instance    title           tags mask     isfloating   monitor */
+	{ NULL,      NULL,       "BlueJ",        1 << 8,       1,           -1 },
+	{ NULL,      NULL,       "Greenfoot",    1 << 8,       1,           -1 },
+	{ "quimup",  NULL,       "Quimup 1.4.0", 1 << 8,       1,           -1 },
 };
 
 /* layout(s) */
