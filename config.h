@@ -75,21 +75,21 @@ static const char *brightness_down[]    = { "xbacklight", "-dec", "25", NULL };
 
 static Key keys[] = {
     // XF86XK 'special' keys
-    { 0, 0x1008ff11, spawn,     { .v = sound_down      } }, /* XF86XK_AudioLowerVolume */
-    { 0, 0x1008ff12, spawn,     { .v = sound_toggle    } }, /* XF86XK_AudioMute */
-    { 0, 0x1008ff13, spawn,     { .v = sound_up        } }, /* XF86XK_AudioRaiseVolume */
+    { 0, 0x1008ff11, sspawn,     { .v = sound_down      } }, /* XF86XK_AudioLowerVolume */
+    { 0, 0x1008ff12, sspawn,     { .v = sound_toggle    } }, /* XF86XK_AudioMute */
+    { 0, 0x1008ff13, sspawn,     { .v = sound_up        } }, /* XF86XK_AudioRaiseVolume */
     //{ 0, 0x1008ff17, mpdchange,  { .i = +1              } }, /* XF86XK_AudioNext */
     //{ 0, 0x1008ff16, mpdchange,  { .i = -1              } }, /* XF86XK_AudioPrev */
     //{ 0, 0x1008ff14, mpdcontrol, { 0                    } }, /* XF86XK_AudioPlay */
-    { 0, 0x1008ff02, spawn,     { .v = brightness_up   } }, /* XF86XK_MonBrightnessUp */
-    { 0, 0x1008ff03, spawn,     { .v = brightness_down } }, /* XF86XK_MonBrightnessDown */
+    { 0, 0x1008ff02, sspawn,     { .v = brightness_up   } }, /* XF86XK_MonBrightnessUp */
+    { 0, 0x1008ff03, sspawn,     { .v = brightness_down } }, /* XF86XK_MonBrightnessDown */
 
     /* modifier         key        function        argument */
-    { MODKEY,           XK_p,      spawn,          { .v  = dmenucmd     } },
+    { MODKEY,           XK_p,      sspawn,          { .v  = dmenucmd     } },
     { MODKEY,           XK_Return, spawn,          { .v  = termcmd      } },
-    { MODKEY,           XK_g,      spawn,          { .v  = chromiumcmd  } },
-    { MODKEY,           XK_s,      spawn,          { .v  = shot_select  } },
-    { MODKEY|ShiftMask, XK_s,      spawn,          { .v  = shot_full    } },
+    { MODKEY,           XK_g,      sspawn,          { .v  = chromiumcmd  } },
+    { MODKEY,           XK_s,      sspawn,          { .v  = shot_select  } },
+    { MODKEY|ShiftMask, XK_s,      sspawn,          { .v  = shot_full    } },
     { MODKEY,           XK_b,      togglebar,      { 0                  } },
     { MODKEY,           XK_j,      focusstack,     { .i  = +1           } },
     { MODKEY,           XK_k,      focusstack,     { .i  = -1           } },
