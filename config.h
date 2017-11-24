@@ -67,6 +67,8 @@ static const char *sound_toggle[]       = { "sound_control.sh", "toggle", NULL }
 static const char *sound_up[]           = { "sound_control.sh", "up",     NULL };
 static const char *sound_down[]         = { "sound_control.sh", "down",   NULL };
 
+static const char *sleepcmd[]           = { "sudo", "zzz",   NULL };
+
 static const char *shot_full[]          = { "shot", NULL };
 static const char *shot_select[]        = { "shot", "-s", NULL };
 
@@ -84,12 +86,19 @@ static Key keys[] = {
     { 0, 0x1008ff02, sspawn,     { .v = brightness_up   } }, /* XF86XK_MonBrightnessUp */
     { 0, 0x1008ff03, sspawn,     { .v = brightness_down } }, /* XF86XK_MonBrightnessDown */
 
+    { MODKEY,           XK_Right,  view_rotate, { .r = RotateRight } },
+    { MODKEY,           XK_Left,   view_rotate, { .r = RotateLeft  } },
+    { MODKEY|ShiftMask, XK_Right,  tag_rotate,  { .r = RotateRight } },
+    { MODKEY|ShiftMask, XK_Left,   tag_rotate,  { .r = RotateLeft  } },
+
+
     /* modifier         key        function        argument */
     { MODKEY,           XK_p,      sspawn,          { .v  = dmenucmd     } },
     { MODKEY,           XK_Return, spawn,          { .v  = termcmd      } },
     { MODKEY,           XK_g,      sspawn,          { .v  = chromiumcmd  } },
     { MODKEY,           XK_s,      sspawn,          { .v  = shot_select  } },
     { MODKEY|ShiftMask, XK_s,      sspawn,          { .v  = shot_full    } },
+    { MODKEY|ShiftMask, XK_z,      sspawn,          { .v  = sleepcmd     } },
     { MODKEY,           XK_b,      togglebar,      { 0                  } },
     { MODKEY,           XK_j,      focusstack,     { .i  = +1           } },
     { MODKEY,           XK_k,      focusstack,     { .i  = -1           } },
