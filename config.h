@@ -48,10 +48,11 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class     instance    title           tags mask     isfloating   monitor */
-	{ NULL,      NULL,       "BlueJ",        1 << 8,       1,           -1 },
-	{ NULL,      NULL,       "Greenfoot",    1 << 8,       1,           -1 },
-	{ "quimup",  NULL,       "Quimup 1.4.0", 1 << 8,       1,           -1 },
+	/* class                    instance    title           tags mask  isfloating  monitor */
+	{ NULL,                     NULL,       "BlueJ",        1 << 8,    1,          -1 },
+	{ NULL,                     NULL,       "Greenfoot",    1 << 8,    1,          -1 },
+	{ "sun-awt-X11-XFramePeer", NULL,       NULL,           1 << 8,    1,          -1 },
+	{ "quimup",                 NULL,       "Quimup 1.4.0", 1 << 8,    1,          -1 },
 };
 
 /* layout(s) */
@@ -85,6 +86,8 @@ static const char *abduco_run[]   = { "abduco", "run",   NULL  };
 static const char *abduco_list[]  = { "abduco", "list",  NULL  };
 static const char *abduco_watch[] = { "abduco", "watch", NULL  };
 
+static const char *xdopass[]      = { "xdopass", NULL };
+
 static const char *sound_toggle[] = { "sound_control.sh", "toggle", NULL };
 static const char *sound_up[]     = { "sound_control.sh", "up",     NULL };
 static const char *sound_down[]   = { "sound_control.sh", "down",   NULL };
@@ -111,6 +114,7 @@ static Key keys[] = {
 	{ MODKEY,           XK_a,           sspawn,         { .v  = abduco_list  } },
 	{ MODKEY,           XK_w,           sspawn,         { .v  = abduco_watch } },
 	{ MODKEY|ShiftMask, XK_Return,      sspawn,         { .v  = termcmd      } },
+	{ MODKEY,           XK_p,           sspawn,         { .v  = xdopass      } },
 	{ MODKEY,           XK_b,           togglebar,      { 0                  } },
 	{ MODKEY,           XK_j,           focusstack,     { .i  = +1           } },
 	{ MODKEY|ShiftMask, XK_j,           movestack,      { .i  = +1           } },
