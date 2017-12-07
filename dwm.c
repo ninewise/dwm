@@ -203,7 +203,9 @@ static void setup(void);
 static void seturgent(Client *c, int urg);
 static void showhide(Client *c);
 static void sigchld(int unused);
-static void spawn(const Arg *arg);
+static void spawn(const char *const *command, int silent);
+static void spawnloud(const Arg *arg);
+static void spawnsilent(const Arg *arg);
 static void splitfrm(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void togglefloating(const Arg *arg);
@@ -1666,19 +1668,34 @@ sigchld(int unused)
 }
 
 void
-spawn(const Arg *arg)
+spawn(const char *const *command, int silent)
 {
-	if (arg->v == dmenucmd)
+	if (command == dmenucmd)
 		dmenumon[0] = '0' + selmon->num;
 	if (fork() == 0) {
 		if (dpy)
 			close(ConnectionNumber(dpy));
+		if (silent) {
+			fclose(stdout);
+			fclose(stderr);
+		}
 		setsid();
-		execvp(((char **)arg->v)[0], (char **)arg->v);
-		fprintf(stderr, "dwm: execvp %s", ((char **)arg->v)[0]);
+		execvp(command[0], (char * const*) command);
+		fprintf(stderr, "dwm: execvp %s", command[0]);
 		perror(" failed");
 		exit(EXIT_SUCCESS);
 	}
+}
+void
+spawnloud(const Arg *arg)
+{
+	spawn((const char **) arg->v, 0);
+}
+
+void
+spawnsilent(const Arg *arg)
+{
+	spawn((const char **) arg->v, 1);
 }
 
 void
