@@ -2,3 +2,6 @@
 		affecting the keyboard grab, see scrot -s for example)
 - add updategeom() hook for external tools like dzen
 - consider onscreenkeyboard hooks for tablet deployment
+
+- arrange --> arrangefrm waar mogelijk?
+- why are there both a clients stack and linkedlist?
