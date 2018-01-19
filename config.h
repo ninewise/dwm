@@ -5,8 +5,8 @@ static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "xft:Source Code Pro:size=10" };
-static const char dmenufont[]       = "xft:Source Code Pro:size=10";
+static const char *fonts[]          = { "xft:Fira Mono:size=10" };
+static const char dmenufont[]       = "xft:Fira Mono:size=10";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
@@ -28,7 +28,6 @@ static const Rule rules[] = {
      */
     /* class            instance    title       tags mask     isfloating   monitor */
     { "Gimp",           NULL,       NULL,       0,            1,           -1 },
-    { "Firefox",        NULL,       NULL,       1 << 8,       0,           -1 },
     { "idea",           NULL,       "LG3D",     0,            0,           -1 },
     { "idea-ultimate",  NULL,       "LG3D",     0,            0,           -1 },
 };
@@ -67,13 +66,13 @@ static const char *sound_toggle[]       = { "sound_control.sh", "toggle", NULL }
 static const char *sound_up[]           = { "sound_control.sh", "up",     NULL };
 static const char *sound_down[]         = { "sound_control.sh", "down",   NULL };
 
-static const char *sleepcmd[]           = { "sudo", "zzz",   NULL };
+static const char *sleepcmd[]           = { "siesta",   NULL };
 
 static const char *shot_full[]          = { "shot", NULL };
 static const char *shot_select[]        = { "shot", "-s", NULL };
 
-static const char *brightness_up[]      = { "xbacklight", "-inc", "25", NULL };
-static const char *brightness_down[]    = { "xbacklight", "-dec", "25", NULL };
+static const char *brightness_up[]      = { "xbacklight", "-inc", "10", NULL };
+static const char *brightness_down[]    = { "xbacklight", "-dec", "10", NULL };
 
 static Key keys[] = {
     // XF86XK 'special' keys
