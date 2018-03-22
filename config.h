@@ -66,7 +66,8 @@ static const char *sound_toggle[]       = { "sound_control.sh", "toggle", NULL }
 static const char *sound_up[]           = { "sound_control.sh", "up",     NULL };
 static const char *sound_down[]         = { "sound_control.sh", "down",   NULL };
 
-static const char *sleepcmd[]           = { "siesta",   NULL };
+static const char *suspendcmd[]         = { "siesta",   NULL };
+static const char *hibernatecmd[]       = { "siesta",   "-Z",   NULL };
 
 static const char *shot_full[]          = { "shot", NULL };
 static const char *shot_select[]        = { "shot", "-s", NULL };
@@ -97,7 +98,8 @@ static Key keys[] = {
     { MODKEY,           XK_g,      sspawn,          { .v  = chromiumcmd  } },
     { MODKEY,           XK_s,      sspawn,          { .v  = shot_select  } },
     { MODKEY|ShiftMask, XK_s,      sspawn,          { .v  = shot_full    } },
-    { MODKEY|ShiftMask, XK_z,      sspawn,          { .v  = sleepcmd     } },
+    { MODKEY|ShiftMask, XK_z,      sspawn,          { .v  = hibernatecmd } },
+    { MODKEY          , XK_z,      sspawn,          { .v  = suspendcmd   } },
     { MODKEY,           XK_b,      togglebar,      { 0                  } },
     { MODKEY,           XK_j,      focusstack,     { .i  = +1           } },
     { MODKEY,           XK_k,      focusstack,     { .i  = -1           } },
