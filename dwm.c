@@ -92,7 +92,6 @@ struct Client {
 	int bw, oldbw;
 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
 	Client *next;
-	Client *snext;
 	Frame *frm;
 	Window win;
 };
@@ -106,7 +105,6 @@ struct Frame {
 	/* if leaf */
 		Client *clients;
 		Client *sel;
-		Client *stack;
 		const Layout *lt;
 	/* else */
 		Frame *a;
@@ -140,7 +138,6 @@ static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interac
 static void arrange(Frame *f);
 static void arrangefrm(Frame *f);
 static void attach(Client *c);
-static void attachstack(Client *c);
 static void buttonpress(XEvent *e);
 static void checkotherwm(void);
 static void cleanup(void);
@@ -154,7 +151,6 @@ static Frame *createfrm(Monitor *mon, Frame *parent);
 static Monitor *createmon(void);
 static void destroynotify(XEvent *e);
 static void detach(Client *c);
-static void detachstack(Client *c);
 static Monitor *dirtomon(int dir);
 static void enternotify(XEvent *e);
 static void expose(XEvent *e);
@@ -360,10 +356,10 @@ arrange(Frame *f)
 {
 	Monitor* m;
 	if (f)
-		showhide(f->stack);
+		showhide(f->clients);
 	else for (m = mons; m; m = m->next)
 		for (f = iterfrm(m); f; f = nextfrm(f))
-			showhide(f->stack);
+			showhide(f->clients);
 	if (f) {
 		arrangefrm(f);
 		restack(f);
@@ -384,13 +380,6 @@ attach(Client *c)
 {
 	c->next = c->frm->clients;
 	c->frm->clients = c;
-}
-
-void
-attachstack(Client *c)
-{
-	c->snext = c->frm->stack;
-	c->frm->stack = c;
 }
 
 void
@@ -444,8 +433,8 @@ cleanup(void)
 	selmon->sel->lt = &foo;
 	for (m = mons; m; m = m->next)
 		for (f = iterfrm(m); f; f = nextfrm(f))
-			while (f->stack)
-				unmanage(f->stack, 0);
+			while (f->clients)
+				unmanage(f->clients, 0);
 	XUngrabKey(dpy, AnyKey, AnyModifier, root);
 	while (mons)
 		cleanupmon(mons);
@@ -646,20 +635,6 @@ detach(Client *c)
 	*tc = c->next;
 }
 
-void
-detachstack(Client *c)
-{
-	Client **tc, *t;
-
-	for (tc = &c->frm->stack; *tc && *tc != c; tc = &(*tc)->snext);
-	*tc = c->snext;
-
-	if (c == c->frm->sel) {
-		for (t = c->frm->stack; t && !ISVISIBLE(t); t = t->snext);
-		c->frm->sel = t;
-	}
-}
-
 Monitor *
 dirtomon(int dir)
 {
@@ -705,7 +680,7 @@ void
 focus(Client *c)
 {
 	if (!c || !ISVISIBLE(c))
-		for (c = selmon->sel->stack; c && !ISVISIBLE(c); c = c->snext);
+		for (c = selmon->sel->clients; c && !ISVISIBLE(c); c = c->next);
 	if (selmon->sel->sel && selmon->sel->sel != c)
 		unfocus(selmon->sel->sel, 0);
 	if (c) {
@@ -715,8 +690,6 @@ focus(Client *c)
 			selmon->sel = c->frm;
 		if (c->isurgent)
 			seturgent(c, 0);
-		detachstack(c);
-		attachstack(c);
 		grabbuttons(c, 1);
 		XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
 		setfocus(c);
@@ -997,7 +970,6 @@ manage(Window w, XWindowAttributes *wa)
 	if (c->isfloating)
 		XRaiseWindow(dpy, c->win);
 	attach(c);
-	attachstack(c);
 	XChangeProperty(dpy, root, netatom[NetClientList], XA_WINDOW, 32, PropModeAppend,
 		(unsigned char *) &(c->win), 1);
 	XMoveResizeWindow(dpy, c->win, c->x + 2 * sw, c->y, c->w, c->h); /* some windows require this */
@@ -1050,7 +1022,6 @@ mergefrm(const Arg *arg)
 	p->leaf = 1;
 	p->clients = c->clients;
 	p->sel = c->sel;
-	p->stack = c->stack;
 	p->lt = c->lt;
 	p->a = NULL;
 	p->b = NULL;
@@ -1060,12 +1031,6 @@ mergefrm(const Arg *arg)
 		t->next = s->clients;
 	else
 		p->clients = s->clients;
-
-	for(t = p->stack; t && t->snext; t = t->snext);
-	if (t)
-		t->snext = s->stack;
-	else
-		p->stack = s->stack;
 
 	for(t = p->clients; t; t = t->next)
 		t->frm = p;
@@ -1389,11 +1354,12 @@ restack(Frame *f)
 		XRaiseWindow(dpy, f->sel->win);
 	if (f->lt) {
 		wc.stack_mode = Below;
-		for (c = f->stack; c; c = c->snext)
+		for (c = f->clients; c; c = c->next)
 			if (!c->isfloating && ISVISIBLE(c)) {
 				XConfigureWindow(dpy, c->win, CWSibling|CWStackMode, &wc);
 				wc.sibling = c->win;
 			}
+		XRaiseWindow(dpy, f->sel->win);
 	}
 	XSync(dpy, False);
 	while (XCheckMaskEvent(dpy, EnterWindowMask, &ev));
@@ -1446,10 +1412,8 @@ sendfrm(Client *c, Frame *f)
 		return;
 	unfocus(c, 1);
 	detach(c);
-	detachstack(c);
 	c->frm = f;
 	attach(c);
-	attachstack(c);
 	focus(NULL);
 	arrange(NULL);
 }
@@ -1628,7 +1592,7 @@ showhide(Client *c)
 		XMoveWindow(dpy, c->win, c->x, c->y);
 		if ((!c->frm->lt || c->isfloating) && !c->isfullscreen)
 			resize(c, c->x, c->y, c->w, c->h, 0);
-		showhide(c->snext);
+		showhide(c->next);
 	}
 }
 
@@ -1683,7 +1647,6 @@ splitfrm(const Arg *arg)
 
 	p->a->clients = p->clients;
 	p->a->sel = p->sel;
-	p->a->stack = p->stack;
 	p->a->lt = p->lt;
 
 	for (c = p->clients; c; c = c->next)
@@ -1691,7 +1654,6 @@ splitfrm(const Arg *arg)
 
 	p->clients = NULL;
 	p->sel = NULL;
-	p->stack = NULL;
 	p->lt = NULL;
 
 	resizefrm(p, p->x, p->y, p->w, p->h);
@@ -1742,7 +1704,6 @@ unmanage(Client *c, int destroyed)
 	XWindowChanges wc;
 
 	detach(c);
-	detachstack(c);
 	if (!destroyed) {
 		wc.border_width = c->oldbw;
 		XGrabServer(dpy); /* avoid race conditions */
@@ -1838,10 +1799,8 @@ updategeom(void)
 					while ((c = f->clients)) {
 						dirty = 1;
 						f->clients = c->next;
-						detachstack(c);
 						c->frm = mons->sel;
 						attach(c);
-						attachstack(c);
 					}
 					f = nextfrm(f);
 				}
