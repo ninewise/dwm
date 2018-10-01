@@ -66,12 +66,14 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
+typedef enum { RotateLeft, RotateRight } ViewRotate; /* view rotations */
 
 typedef union {
 	int i;
 	unsigned int ui;
 	float f;
 	const void *v;
+    const ViewRotate r;
 } Arg;
 
 typedef struct {
@@ -206,7 +208,9 @@ static void seturgent(Client *c, int urg);
 static void showhide(Client *c);
 static void sigchld(int unused);
 static void spawn(const Arg *arg);
+static void sspawn(const Arg *arg);
 static void tag(const Arg *arg);
+static void tag_rotate(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tile(Monitor *);
 static void togglebar(const Arg *arg);
@@ -226,6 +230,7 @@ static void updatestatus(void);
 static void updatetitle(Client *c);
 static void updatewindowtype(Client *c);
 static void updatewmhints(Client *c);
+static void view_rotate(const Arg *arg);
 static void view(const Arg *arg);
 static Client *wintoclient(Window w);
 static Monitor *wintomon(Window w);
@@ -1635,7 +1640,6 @@ sigchld(int unused)
 		die("can't install SIGCHLD handler:");
 	while (0 < waitpid(-1, NULL, WNOHANG));
 }
-
 void
 spawn(const Arg *arg)
 {
@@ -1651,15 +1655,52 @@ spawn(const Arg *arg)
 		exit(EXIT_SUCCESS);
 	}
 }
+void
+sspawn(const Arg *arg)
+{
+	if (arg->v == dmenucmd)
+		dmenumon[0] = '0' + selmon->num;
+	if (fork() == 0) {
+		if (dpy)
+			close(ConnectionNumber(dpy));
+		setsid();
+        fclose(stderr);
+        fclose(stdout);
+		execvp(((char **)arg->v)[0], (char **)arg->v);
+		fprintf(stderr, "dwm: execvp %s", ((char **)arg->v)[0]);
+		perror(" failed");
+		exit(EXIT_SUCCESS);
+	}
+}
 
 void
 tag(const Arg *arg)
 {
 	if (selmon->sel && arg->ui & TAGMASK) {
 		selmon->sel->tags = arg->ui & TAGMASK;
-		focus(NULL);
-		arrange(selmon);
+        view(arg);
 	}
+}
+
+void
+rotate(ViewRotate dir, unsigned int * tag)
+{
+    unsigned int new_tag = *tag;
+    if(dir == RotateLeft){
+        new_tag |= ((1 & new_tag) << LENGTH(tags));
+        new_tag >>= 1;
+    } else {
+        new_tag <<= 1;
+        new_tag |= (new_tag >> LENGTH(tags));
+    }
+    *tag = new_tag & TAGMASK;
+}
+
+void
+tag_rotate(const Arg *arg)
+{
+    rotate(arg->r, &(selmon->sel->tags));
+    view_rotate(arg);
 }
 
 void
@@ -2030,6 +2071,14 @@ updatewmhints(Client *c)
 			c->neverfocus = 0;
 		XFree(wmh);
 	}
+}
+
+void
+view_rotate(const Arg *arg)
+{
+    rotate(arg->r, &(selmon->tagset[selmon->seltags]));
+    focus(NULL);
+    arrange(selmon);
 }
 
 void
