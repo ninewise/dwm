@@ -42,7 +42,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, NULL };
-static const char *termcmd[]  = { "st", "-e", "dvtm", NULL };
+static const char *termcmd[]  = { "st", NULL };
 static const char *dtimecmd[] = { "show", "date", "+%F %I:%M", NULL };
 static const char *battcmd[]  = { "show", "acpi", "-b", NULL };
 static const char *passcmd[]  = { "xdopass", NULL };
