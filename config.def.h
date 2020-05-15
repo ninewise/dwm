@@ -15,14 +15,13 @@ static const char *colors[][3]      = {
 	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
 };
 
-static const Rule rules[] = {
+static const Rule rules[] = {0}; // {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class                       instance  title  isfloating */
-	{ "bluej-runtime-ExecServer",  NULL,     NULL,  1,         }, // Greenfoot
-};
+// };
 
 /* layout(s) */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
@@ -43,8 +42,8 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, NULL };
-static const char *termcmd[]  = { "st", "dvtm", NULL };
-static const char *dtimecmd[] = { "show", "date", "+%a %d %b, %I:%M", NULL };
+static const char *termcmd[]  = { "st", "-e", "dvtm", NULL };
+static const char *dtimecmd[] = { "show", "date", "+%F %I:%M", NULL };
 static const char *battcmd[]  = { "show", "acpi", "-b", NULL };
 static const char *passcmd[]  = { "xdopass", NULL };
 
